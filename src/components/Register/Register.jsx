@@ -1,7 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import auth from "../../firebase.confing";
 import { useState } from "react";
 import { IoMdEyeOff, IoMdEye } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 
 const Register = () => {
@@ -41,6 +42,12 @@ const Register = () => {
         .then(userCredential => {
             console.log(userCredential.user);
             setSuccess('User created Successfully')
+            
+            // validate the users
+            sendEmailVerification(userCredential.user)
+            .then( () => {
+                alert('pleade check your inbox to varify your account!')
+            })
         })
         .catch(error => {
             setRegisterError(error.message);
@@ -71,7 +78,8 @@ const Register = () => {
                 <input type="checkbox" name="terms" id="terms" />
                 <label className="ml-2" htmlFor="terms">Accept out <a href="">Terms & Conditions</a></label>
                 </div>
-                <input className="mb-2 md:w-3/4 btn btn-secondary"  type="submit" value="Register" required />
+                
+                <input className="mb-2 md:w-3/4 btn btn-secondary"  type="submit" value="Register" />
             </form>
             {
                 registerError && <p className="text-xl text-red-500 font-medium">{registerError}</p>
@@ -79,6 +87,7 @@ const Register = () => {
             {
                 success && <p className="text-xl text-green-500 font-medium">{success}</p>
             }
+            <p>Already have an Accoutn? <Link to="/login" className="underline" >Login</Link></p>
             </div>
         </div>
     );
